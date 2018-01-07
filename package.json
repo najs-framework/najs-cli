@@ -1,0 +1,15 @@
+{
+  "name": "najs-cli",
+  "version": "0.0.1",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/najs-framework/najs-cli.git"
+  },
+  "author": {
+    "name": "Nhat Phan",
+    "email": "najs@ntworld.net"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

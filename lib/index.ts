@@ -1,17 +1,17 @@
-import * as cli from 'commander'
+import * as Commander from 'commander'
+import { is_najs_application } from './private/is_najs_application'
+import { list as list_command } from './global/list'
+import { create as create_command } from './global/create'
+import { AutoloadCommand } from './global/AutoloadCommand'
 
-cli.version('0.0.1').description('Najs CLI')
-
-cli
-  .command('setup [env] [something-else]')
-  .description('run setup commands for all envs')
-  .option('-s, --setup_mode [mode]', 'Which setup mode to use')
-  .action(function(this: any, env, something, options) {
-    console.log(this)
-    console.log(env, something, options['setup_mode'])
-    const mode = options.setup_mode || 'normal'
-    env = env || 'all'
-    console.log('setup for %s env(s) with %s mode', env, mode)
-  })
-
-cli.parse(process.argv)
+export function load(cli: Commander.Command, packageInfo: Object, cwd: string): Commander.Command {
+  cli.version(packageInfo['version'], '-v, --version').description(packageInfo['description'])
+  cli.usage('[option]')
+  if (is_najs_application(cwd)) {
+    list_command(cli)
+    new AutoloadCommand(cli, cwd)
+  } else {
+    create_command(cli)
+  }
+  return cli
+}

@@ -44,11 +44,13 @@
     "najs": "^0.2.5"
   },
   "dependencies": {
+    "@types/semver": "^5.5.0",
     "async": "^2.6.0",
     "commander": "^2.13.0",
     "ejs": "^2.5.7",
     "glob": "^7.1.2",
-    "inquirer": "^5.0.1"
+    "inquirer": "^5.0.1",
+    "semver": "^5.5.0"
   },
   "devDependencies": {
     "@types/async": "^2.0.47",

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const is_najs_application_1 = require("./private/is_najs_application");
 const list_1 = require("./global/list");
-const create_1 = require("./global/create");
+const CreateCommand_1 = require("./global/CreateCommand");
 const AutoloadCommand_1 = require("./global/AutoloadCommand");
 function load(cli, packageInfo, cwd) {
     cli.version(packageInfo['version'], '-v, --version').description(packageInfo['description']);
@@ -12,7 +12,7 @@ function load(cli, packageInfo, cwd) {
         new AutoloadCommand_1.AutoloadCommand(cli, cwd);
     }
     else {
-        create_1.create(cli);
+        new CreateCommand_1.CreateCommand(cli, cwd);
     }
     return cli;
 }

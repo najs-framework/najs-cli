@@ -4,17 +4,9 @@ const Path = require("path");
 const FileSystem = require("fs");
 const Glob = require("glob");
 const Async = require("async");
+const GlobalCommandBase_1 = require("./GlobalCommandBase");
 const CodeTemplate_1 = require("../templates/CodeTemplate");
-const DEFAULT_CONFIG = {
-    included: ['bootstrap/**/*.ts', 'routes/**/*.ts', 'app/**/*.ts'],
-    excluded: []
-};
-class AutoloadCommand {
-    constructor(cli, cwd) {
-        this.cli = cli;
-        this.cwd = cwd;
-        this.register();
-    }
+class AutoloadCommand extends GlobalCommandBase_1.GlobalCommandBase {
     register() {
         this.cli
             .command('autoload')
@@ -31,12 +23,14 @@ class AutoloadCommand {
     }
     async handle() {
         const autoloadJsonPath = Path.join(this.cwd, 'autoload.json');
-        let config = DEFAULT_CONFIG;
+        const configTemplate = new CodeTemplate_1.CodeTemplate('autoload.json');
+        let config;
         if (FileSystem.existsSync(autoloadJsonPath)) {
             config = require(autoloadJsonPath);
         }
         else {
-            this.writeDefaultConfigFile(autoloadJsonPath);
+            config = JSON.parse(await configTemplate.getTemplateContent());
+            configTemplate.writeToPath(autoloadJsonPath);
         }
         return this.generateByConfig(config);
     }
@@ -81,9 +75,6 @@ class AutoloadCommand {
             lines.push(`import '${importPath}'`);
         }
         return lines.join('\n');
-    }
-    writeDefaultConfigFile(path) {
-        new CodeTemplate_1.CodeTemplate('autoload.json').writeToPath(path);
     }
 }
 exports.AutoloadCommand = AutoloadCommand;

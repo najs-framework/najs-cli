@@ -1,7 +1,7 @@
 import * as Commander from 'commander'
 import { is_najs_application } from './private/is_najs_application'
 import { list as list_command } from './global/list'
-import { create as create_command } from './global/create'
+import { CreateCommand } from './global/CreateCommand'
 import { AutoloadCommand } from './global/AutoloadCommand'
 
 export function load(cli: Commander.Command, packageInfo: Object, cwd: string): Commander.Command {
@@ -11,7 +11,7 @@ export function load(cli: Commander.Command, packageInfo: Object, cwd: string): 
     list_command(cli)
     new AutoloadCommand(cli, cwd)
   } else {
-    create_command(cli)
+    new CreateCommand(cli, cwd)
   }
   return cli
 }

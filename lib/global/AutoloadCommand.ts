@@ -1,8 +1,8 @@
-import * as Commander from 'commander'
 import * as Path from 'path'
 import * as FileSystem from 'fs'
 import * as Glob from 'glob'
 import * as Async from 'async'
+import { GlobalCommandBase } from './GlobalCommandBase'
 import { CodeTemplate } from '../templates/CodeTemplate'
 
 export type AutoloadConfig = {
@@ -10,22 +10,8 @@ export type AutoloadConfig = {
   excluded: string[]
 }
 
-const DEFAULT_CONFIG: AutoloadConfig = {
-  included: ['bootstrap/**/*.ts', 'routes/**/*.ts', 'app/**/*.ts'],
-  excluded: []
-}
-
-export class AutoloadCommand {
-  cli: Commander.Command
-  cwd: string
-
-  constructor(cli: Commander.Command, cwd: string) {
-    this.cli = cli
-    this.cwd = cwd
-    this.register()
-  }
-
-  register() {
+export class AutoloadCommand extends GlobalCommandBase {
+  register(): void {
     this.cli
       .command('autoload')
       .description('Create autoload file')
@@ -42,11 +28,14 @@ export class AutoloadCommand {
 
   async handle() {
     const autoloadJsonPath = Path.join(this.cwd, 'autoload.json')
-    let config: AutoloadConfig = DEFAULT_CONFIG
+    const configTemplate = new CodeTemplate('autoload.json')
+
+    let config: AutoloadConfig
     if (FileSystem.existsSync(autoloadJsonPath)) {
       config = require(autoloadJsonPath)
     } else {
-      this.writeDefaultConfigFile(autoloadJsonPath)
+      config = JSON.parse(await configTemplate.getTemplateContent())
+      configTemplate.writeToPath(autoloadJsonPath)
     }
     return this.generateByConfig(config)
   }
@@ -100,9 +89,5 @@ export class AutoloadCommand {
       lines.push(`import '${importPath}'`)
     }
     return lines.join('\n')
-  }
-
-  writeDefaultConfigFile(path: string) {
-    new CodeTemplate('autoload.json').writeToPath(path)
   }
 }

@@ -1,9 +1,9 @@
 import * as Path from 'path'
 import * as FileSystem from 'fs'
 import * as Commander from 'commander'
-import * as ChildProcess from 'child_process'
-import * as Semver from 'semver'
-import { CodeTemplate } from '../templates/CodeTemplate'
+import { isObject } from 'lodash'
+import { CodeTemplate } from '../private/CodeTemplate'
+import { ChildProcessHelper } from '../private/ChildProcessHelper'
 import { GlobalCommandBase } from './GlobalCommandBase'
 
 export class CreateCommand extends GlobalCommandBase {
@@ -28,39 +28,17 @@ export class CreateCommand extends GlobalCommandBase {
 
   async handle() {
     this.assertAppNameDoesNotExistsAndMakeDirectory()
+    this.createDirectoryStructure(this.getDirectoryStructure(), this.path())
     await new CodeTemplate('package.json')
       .with('name', this.name)
       .with('version', this.version)
       .writeToPath(this.path('package.json'))
     await this.createFilesInCWD()
     await this.installPackage()
+    await this.createAutoload()
   }
 
-  protected async installPackage() {
-    return new Promise(resolve => {
-      const cmd: string = this.hasYarn() ? 'yarn install' : 'npm install'
-      const installer: ChildProcess.ChildProcess = ChildProcess.exec(`cd ${this.name} && ${cmd}`, function() {})
-      installer.unref()
-      installer.stdout.on('data', function(data) {
-        process.stdout.write(data)
-      })
-      installer.stderr.on('data', function(data) {
-        process.stderr.write(data)
-      })
-      installer.on('close', function() {
-        resolve()
-      })
-    })
-  }
-
-  protected hasYarn() {
-    const version: any = ChildProcess.execSync('yarn --version')
-      .toString()
-      .trim()
-    return Semver.valid(version) ? true : false
-  }
-
-  protected assertAppNameDoesNotExistsAndMakeDirectory() {
+  assertAppNameDoesNotExistsAndMakeDirectory() {
     const path: string = Path.join(this.cwd, this.name)
     if (FileSystem.existsSync(path)) {
       throw new Error('Directory ' + path + ' is exists, could not create application')
@@ -68,8 +46,71 @@ export class CreateCommand extends GlobalCommandBase {
     FileSystem.mkdirSync(path)
   }
 
-  protected async createFilesInCWD() {
+  getDirectoryStructure() {
+    return {
+      '.vscode': true,
+      app: {
+        Console: true,
+        Events: true,
+        Http: {
+          Controllers: true,
+          Middleware: true
+        },
+        Jobs: true,
+        Listeners: true,
+        Mail: true,
+        Models: true,
+        Notifications: true,
+        Policies: true,
+        Providers: true,
+        Rules: true,
+        storage: {
+          logs: true
+        }
+      },
+      bootstrap: true,
+      config: true,
+      public: true,
+      resources: {
+        view: {
+          layout: true
+        }
+      },
+      routes: true,
+      test: true
+    }
+  }
+
+  createDirectoryStructure(structure: Object, base: string) {
+    for (const name in structure) {
+      if (structure[name] === false) {
+        continue
+      }
+
+      const path = Path.join(base, name)
+      FileSystem.mkdirSync(path)
+
+      if (isObject(structure[name])) {
+        this.createDirectoryStructure(structure[name], path)
+      }
+    }
+  }
+
+  async installPackage() {
+    const cmd: string = ChildProcessHelper.hasYarn() ? 'yarn install' : 'npm install'
+    await ChildProcessHelper.exec(`cd ${this.name} && ${cmd}`)
+  }
+
+  async createAutoload() {
+    await ChildProcessHelper.exec(`cd ${this.name} && najs-cli autoload`)
+  }
+
+  async createFilesInCWD() {
     await new CodeTemplate('.gitignore').writeToPath(this.path('.gitignore'))
     await new CodeTemplate('autoload.json').writeToPath(this.path('autoload.json'))
+    await new CodeTemplate('index.ts').writeToPath(this.path('index.ts'))
+    await new CodeTemplate('.vscode', 'extensions.json').writeToPath(this.path('.vscode', 'extensions.json'))
+    await new CodeTemplate('.vscode', 'settings.json').writeToPath(this.path('.vscode', 'settings.json'))
+    await new CodeTemplate('config', 'default.js').writeToPath(this.path('config', 'default.js'))
   }
 }

@@ -5,7 +5,7 @@ const FileSystem = require("fs");
 const Glob = require("glob");
 const Async = require("async");
 const GlobalCommandBase_1 = require("./GlobalCommandBase");
-const CodeTemplate_1 = require("../templates/CodeTemplate");
+const CodeTemplate_1 = require("../private/CodeTemplate");
 class AutoloadCommand extends GlobalCommandBase_1.GlobalCommandBase {
     register() {
         this.cli

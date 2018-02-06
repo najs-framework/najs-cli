@@ -3,7 +3,7 @@ import * as FileSystem from 'fs'
 import * as Glob from 'glob'
 import * as Async from 'async'
 import { GlobalCommandBase } from './GlobalCommandBase'
-import { CodeTemplate } from '../templates/CodeTemplate'
+import { CodeTemplate } from '../private/CodeTemplate'
 
 export type AutoloadConfig = {
   included: string[]

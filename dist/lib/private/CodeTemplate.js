@@ -4,11 +4,11 @@ const FileSystem = require("fs");
 const Path = require("path");
 const Ejs = require("ejs");
 class CodeTemplate {
-    constructor(template) {
-        this.template = template;
-        this.templatePath = Path.resolve(__dirname, '..', '..', '..', 'templates', template + '.ejs');
+    constructor(...args) {
+        this.template = args.length === 1 ? args[0] : Path.join(...args);
+        this.templatePath = Path.resolve(__dirname, '..', '..', '..', 'templates', this.template + '.ejs');
         if (!FileSystem.existsSync(this.templatePath)) {
-            throw new Error('Template ' + template + ' not found.');
+            throw new Error('Template ' + this.template + ' not found.');
         }
         this.variables = {};
     }

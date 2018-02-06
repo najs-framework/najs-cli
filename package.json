@@ -1,6 +1,6 @@
 {
   "name": "najs-cli",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "Najs CLI",
   "scripts": {
     "build": "npm run build-ts && npm run tslint",
@@ -44,14 +44,16 @@
     "najs": "^0.2.5"
   },
   "dependencies": {
-    "@types/async": "^2.0.47",
     "async": "^2.6.0",
     "commander": "^2.13.0",
+    "ejs": "^2.5.7",
     "glob": "^7.1.2",
     "inquirer": "^5.0.1"
   },
   "devDependencies": {
+    "@types/async": "^2.0.47",
     "@types/commander": "^2.12.2",
+    "@types/ejs": "^2.5.0",
     "@types/glob": "^5.0.35",
     "@types/inquirer": "^0.0.36",
     "@types/jest": "^21.1.8",

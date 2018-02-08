@@ -68,7 +68,6 @@ export class CreateCommand extends GlobalCommandBase {
           logs: true
         }
       },
-      bootstrap: true,
       config: true,
       public: true,
       resources: {

@@ -61,7 +61,6 @@ class CreateCommand extends GlobalCommandBase_1.GlobalCommandBase {
                     logs: true
                 }
             },
-            bootstrap: true,
             config: true,
             public: true,
             resources: {

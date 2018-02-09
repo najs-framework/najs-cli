@@ -5,9 +5,13 @@ import * as Async from 'async'
 import { GlobalCommandBase } from './GlobalCommandBase'
 import { CodeTemplate } from '../private/CodeTemplate'
 
-export type AutoloadConfig = {
+export type AutoloadConfigItem = {
   included: string[]
   excluded: string[]
+}
+
+export type AutoloadConfig = {
+  [key: string]: AutoloadConfigItem
 }
 
 export class AutoloadCommand extends GlobalCommandBase {
@@ -37,17 +41,19 @@ export class AutoloadCommand extends GlobalCommandBase {
       config = JSON.parse(await configTemplate.getTemplateContent())
       configTemplate.writeToPath(autoloadJsonPath)
     }
-    return this.generateByConfig(config)
+    for (const file in config) {
+      await this.generateAutoloadFile(file, config[file])
+    }
   }
 
-  async generateByConfig(config: AutoloadConfig) {
+  async generateAutoloadFile(fileName: string, config: AutoloadConfigItem) {
     const excluded: string[] = await this.matchFileByGlobPatterns(config.excluded, false)
     const included: string[] = await this.matchFileByGlobPatterns(config.included, true)
 
     const result: string[] = included.filter(item => excluded.indexOf(item) === -1)
     const template = new CodeTemplate('autoload.ts')
     template.with('content', this.buildContentFromFileList(result))
-    template.writeToPath(Path.join(this.cwd, 'autoload.ts'))
+    template.writeToPath(Path.join(this.cwd, fileName))
   }
 
   async matchFileByGlobPatterns(patterns: string[], includeComment: boolean): Promise<string[]> {

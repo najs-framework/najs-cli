@@ -27,7 +27,6 @@ export declare class CreateCommand extends GlobalCommandBase {
                 logs: boolean;
             };
         };
-        bootstrap: boolean;
         config: boolean;
         public: boolean;
         resources: {

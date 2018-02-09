@@ -32,15 +32,17 @@ class AutoloadCommand extends GlobalCommandBase_1.GlobalCommandBase {
             config = JSON.parse(await configTemplate.getTemplateContent());
             configTemplate.writeToPath(autoloadJsonPath);
         }
-        return this.generateByConfig(config);
+        for (const file in config) {
+            await this.generateAutoloadFile(file, config[file]);
+        }
     }
-    async generateByConfig(config) {
+    async generateAutoloadFile(fileName, config) {
         const excluded = await this.matchFileByGlobPatterns(config.excluded, false);
         const included = await this.matchFileByGlobPatterns(config.included, true);
         const result = included.filter(item => excluded.indexOf(item) === -1);
         const template = new CodeTemplate_1.CodeTemplate('autoload.ts');
         template.with('content', this.buildContentFromFileList(result));
-        template.writeToPath(Path.join(this.cwd, 'autoload.ts'));
+        template.writeToPath(Path.join(this.cwd, fileName));
     }
     async matchFileByGlobPatterns(patterns, includeComment) {
         return new Promise((resolve, reject) => {

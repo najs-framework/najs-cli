@@ -3,4 +3,18 @@
  *
  * You can changed files list by editing `autoload.json` file and re-run the command
  */
+import { register } from 'najs-binding'
 <%- content %>
+
+function register_classes(container: any) {
+  for (const name in container) {
+    const item: any = container[name]
+    if (typeof item !== 'function') {
+      continue
+    }
+    if (typeof item.className === 'string' || typeof Object.getPrototypeOf(item).getClassName === 'function') {
+      register(item)
+    }
+  }
+}
+register_classes({})

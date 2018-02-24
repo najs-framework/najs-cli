@@ -1,6 +1,9 @@
 {
   "autoload.ts": {
-    "included": ["bootstrap/**/*.ts", "routes/**/*.ts", "app/**/*.ts"],
-    "excluded": [] 
+    "included": {
+      "routes/**/*.ts": { "register": false },
+      "app/**/*.ts": { "register": true }
+    },
+    "excluded": []
   }
 }

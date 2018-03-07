@@ -69,6 +69,7 @@ export class CreateCommand extends GlobalCommandBase {
         }
       },
       config: true,
+      cypress: true,
       public: true,
       resources: {
         view: {
@@ -108,6 +109,8 @@ export class CreateCommand extends GlobalCommandBase {
     await new CodeTemplate('.gitignore').writeToPath(this.path('.gitignore'))
     await new CodeTemplate('autoload.json').writeToPath(this.path('autoload.json'))
     await new CodeTemplate('index.ts').writeToPath(this.path('index.ts'))
+    await new CodeTemplate('tslint.json').writeToPath(this.path('tslint.json'))
+    await new CodeTemplate('tsconfig.json').writeToPath(this.path('tsconfig.json'))
     await new CodeTemplate('.vscode', 'extensions.json').writeToPath(this.path('.vscode', 'extensions.json'))
     await new CodeTemplate('.vscode', 'settings.json').writeToPath(this.path('.vscode', 'settings.json'))
     await new CodeTemplate('config', 'default.js').writeToPath(this.path('config', 'default.js'))

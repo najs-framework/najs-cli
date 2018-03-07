@@ -28,6 +28,7 @@ export declare class CreateCommand extends GlobalCommandBase {
             };
         };
         config: boolean;
+        cypress: boolean;
         public: boolean;
         resources: {
             view: {

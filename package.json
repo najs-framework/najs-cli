@@ -1,6 +1,6 @@
 {
   "name": "najs-cli",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Najs CLI",
   "scripts": {
     "build": "npm run build-ts && npm run tslint",
@@ -29,7 +29,7 @@
     "testMatch": ["**/test/**/*.test.ts", "**/test/**/*.test.js"],
     "testEnvironment": "node"
   },
-  "files": ["dist/**/*", "bin"],
+  "files": ["dist/**/*", "bin", "templates"],
   "main": "bin/index.js",
   "types": "./dist/lib/index.d.ts",
   "repository": {

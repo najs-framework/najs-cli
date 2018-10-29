@@ -1,6 +1,6 @@
 {
   "name": "najs-cli",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Najs CLI",
   "scripts": {
     "build": "npm run build-ts && npm run tslint",
@@ -10,6 +10,10 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "prepublishOnly": "tsc -d -p ./ --outDir dist",
     "watch-ts": "tsc -w"
+  },
+  "bin": {
+    "najs": "bin/index.js",
+    "najs-cli": "bin/index.js"
   },
   "jest": {
     "globals": {
@@ -25,8 +29,8 @@
     "testMatch": ["**/test/**/*.test.ts", "**/test/**/*.test.js"],
     "testEnvironment": "node"
   },
-  "files": ["dist/**/*"],
-  "main": "./dist/lib/index.js",
+  "files": ["dist/**/*", "bin"],
+  "main": "bin/index.js",
   "types": "./dist/lib/index.d.ts",
   "repository": {
     "type": "git",
@@ -39,9 +43,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=8.7"
-  },
-  "peerDependencies": {
-    "najs": "^0.2.5"
   },
   "dependencies": {
     "async": "^2.6.0",
